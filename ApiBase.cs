@@ -13,32 +13,32 @@ namespace SubsonicAPI
         /// <summary>
         /// SubSonic API バージョン
         /// </summary>
-        private const string API_VERSION = "1.11.0";
+        protected const string API_VERSION = "1.11.0";
 
         /// <summary>
         /// APIで使用するフォーマット（json）
         /// </summary>
-        private const string FORMAT = "json";
+        protected const string FORMAT = "xml";
 
         /// <summary>
         /// クライアントアプリ名
         /// </summary>
-        private readonly string _client = String.Empty;
+        protected string _client = String.Empty;
 
         /// <summary>
         /// PasswordValut に対するリソース名のプレフィクス
         /// </summary>
-        private const string PREFIX = "com.github.mitaroThanken.SubSonicAPIforWinRT_";
+        protected const string PREFIX = "com.github.mitaroThanken.SubSonicAPIforWinRT_";
 
         /// <summary>
         /// APIにてアクセスする先
         /// </summary>
-        private readonly Uri _baseUri = null;
+        protected Uri _baseUri = null;
 
         /// <summary>
         /// ユーザー名とパスワード（PasswordValutから取得）
         /// </summary>
-        private readonly PasswordCredential credential = null;
+        protected PasswordCredential credential = null;
 
         /// <summary>
         /// コンストラクタ
@@ -109,13 +109,31 @@ namespace SubsonicAPI
         /// <remarks>
         /// 使用不可
         /// </remarks>
-        /// <exception cref="NotSupportedException" />
-        private ApiBase()
-        {
-            throw new NotSupportedException();
-        }
+        protected ApiBase() { }
 
-        public Task<IRestResponse<T>> Execute<T>(RestRequest req)
+        /// <summary>
+        /// APIオブジェクトを取得
+        /// </summary>
+        /// <typeparam name="T">APIクラス</typeparam>
+        /// <returns>API呼び出し用オブジェクト</returns>
+        public T GetObject<T>()
+            where T : ApiBase, new()
+        {
+            T obj = new T();
+            obj._client = this._client;
+            obj._baseUri = this._baseUri;
+            obj.credential = this.credential;
+
+            return obj;
+        }
+   
+        /// <summary>
+        /// RESTリクエスト
+        /// </summary>
+        /// <typeparam name="T">API戻りを格納する型</typeparam>
+        /// <param name="req">リクエスト</param>
+        /// <returns>APIからの戻り</returns>
+        public Task<IRestResponse<T>> ExecuteAsync<T>(RestRequest req)
             where T : new()
         {
             var client = new RestClient();
