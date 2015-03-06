@@ -10,5 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ApiBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Error.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Ping.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SubSonicResponce.cs" />
   </ItemGroup>
 </Project>
