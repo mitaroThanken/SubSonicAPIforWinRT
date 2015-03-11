@@ -12,6 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ApiBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Error.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Ping.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SubSonicResponce.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SubSonicResponse.cs" />
   </ItemGroup>
 </Project>

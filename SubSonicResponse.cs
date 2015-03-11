@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 using RestSharp.Deserializers;
-using SubsonicAPI;
+using SubSonicAPI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SubSonicAPI
 {
-    [DeserializeAs(Name="subsonic-responce")]
-    public class SubSonicResponce : ApiBase
+    [DeserializeAs(Name="subsonic-response")]
+    public class SubSonicResponse
     {
         public string status { get; set; }
         public string version { get; set; }
