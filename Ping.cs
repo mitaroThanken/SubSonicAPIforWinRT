@@ -9,6 +9,17 @@ namespace SubSonicAPI
 {
     public class Ping : ApiBase
     {
+        private Ping()
+        {
+            throw new NotSupportedException();
+        }
+
+        public Ping(string client, Uri baseUri, string userName, string password) :
+            base(client, baseUri, userName, password) { }
+
+        public Ping(string client, Uri baseUri, string userName) :
+            base(client, baseUri, userName) { }
+
         public async Task<IRestResponse<SubSonicResponse>> ExecuteAsync()
         {
             var request = new RestRequest();
