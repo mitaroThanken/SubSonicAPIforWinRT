@@ -1,4 +1,5 @@
 ﻿using RestSharp;
+using RestSharp.Deserializers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Security.Credentials;
 
-namespace SubsonicAPI
+namespace SubSonicAPI
 {
     public class ApiBase
     {
@@ -18,7 +19,7 @@ namespace SubsonicAPI
         /// <summary>
         /// APIで使用するフォーマット（json）
         /// </summary>
-        protected const string FORMAT = "xml";
+        protected const string FORMAT = "json";
 
         /// <summary>
         /// クライアントアプリ名
@@ -54,12 +55,15 @@ namespace SubsonicAPI
             this(client, baseUri)
         {
             var valut = new PasswordVault();
-            credential = valut.Retrieve(PREFIX + baseUri.ToString(), userName);
-
-            if (credential != null)
+            try
             {
-                valut.Remove(credential);
+                credential = valut.Retrieve(PREFIX + baseUri.ToString(), userName);
+                if (credential != null)
+                {
+                    valut.Remove(credential);
+                }
             }
+            catch (Exception) { }
 
             credential = new PasswordCredential(PREFIX + _baseUri.ToString(),
                                                 userName, password);
@@ -137,9 +141,12 @@ namespace SubsonicAPI
             where T : new()
         {
             var client = new RestClient();
+            client.AddHandler("txt/xml", new XmlDeserializer());
             client.BaseUrl = _baseUri.ToString();
             client.Authenticator = 
                 new HttpBasicAuthenticator(credential.UserName, credential.Password);
+            req.AddParameter("u", credential.UserName);
+            req.AddParameter("p", credential.Password);
             req.AddParameter("v", API_VERSION);
             req.AddParameter("c", _client);
             req.AddParameter("f", FORMAT);
