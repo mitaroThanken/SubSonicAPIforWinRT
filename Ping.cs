@@ -1,5 +1,5 @@
 ﻿using RestSharp;
-using SubsonicAPI;
+using SubSonicAPI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace SubSonicAPI
 {
-    public class Ping : SubSonicResponce
+    public class Ping : ApiBase
     {
-        public async Task<IRestResponse<Ping>> ExecuteAsync()
+        public async Task<IRestResponse<SubSonicResponse>> ExecuteAsync()
         {
             var request = new RestRequest();
             request.Resource = "rest/ping.view";
             request.RootElement = "subsonic-response";
 
-            return await ExecuteAsync<Ping>(request);
+            return await ExecuteAsync<SubSonicResponse>(request);
         }
     }
 }
