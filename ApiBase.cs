@@ -51,7 +51,7 @@ namespace SubSonicAPI
         /// <param name="baseUri">ベースURI</param>
         /// <param name="userName">ユーザー名</param>
         /// <param name="password">パスワード</param>
-        public ApiBase(string client, Uri baseUri, string userName, string password) :
+        protected ApiBase(string client, Uri baseUri, string userName, string password) :
             this(client, baseUri)
         {
             var valut = new PasswordVault();
@@ -80,7 +80,7 @@ namespace SubSonicAPI
         /// <param name="baseUri">ベースURI</param>
         /// <param name="userName">ユーザー名</param>
         /// <exception cref="ArgumentException"/>
-        public ApiBase(string client, Uri baseUri, string userName) :
+        protected ApiBase(string client, Uri baseUri, string userName) :
             this(client, baseUri)
         {
             var valut = new PasswordVault();
@@ -116,37 +116,19 @@ namespace SubSonicAPI
         protected ApiBase() { }
 
         /// <summary>
-        /// APIオブジェクトを取得
-        /// </summary>
-        /// <typeparam name="T">APIクラス</typeparam>
-        /// <returns>API呼び出し用オブジェクト</returns>
-        public T GetObject<T>()
-            where T : ApiBase, new()
-        {
-            T obj = new T();
-            obj._client = this._client;
-            obj._baseUri = this._baseUri;
-            obj.credential = this.credential;
-
-            return obj;
-        }
-   
-        /// <summary>
         /// RESTリクエスト
         /// </summary>
         /// <typeparam name="T">API戻りを格納する型</typeparam>
         /// <param name="req">リクエスト</param>
         /// <returns>APIからの戻り</returns>
-        public Task<IRestResponse<T>> ExecuteAsync<T>(RestRequest req)
+        protected Task<IRestResponse<T>> ExecuteAsync<T>(RestRequest req)
             where T : new()
         {
             var client = new RestClient();
             client.AddHandler("txt/xml", new XmlDeserializer());
             client.BaseUrl = _baseUri.ToString();
-            client.Authenticator = 
-                new HttpBasicAuthenticator(credential.UserName, credential.Password);
-            req.AddParameter("u", credential.UserName);
-            req.AddParameter("p", credential.Password);
+            client.Authenticator =
+                new SimpleAuthenticator("u", credential.UserName, "p", credential.Password);
             req.AddParameter("v", API_VERSION);
             req.AddParameter("c", _client);
             req.AddParameter("f", FORMAT);
