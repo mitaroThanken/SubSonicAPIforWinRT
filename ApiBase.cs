@@ -27,11 +27,6 @@ namespace SubSonicAPI
         protected string _client = String.Empty;
 
         /// <summary>
-        /// PasswordValut に対するリソース名のプレフィクス
-        /// </summary>
-        protected const string PREFIX = "com.github.mitaroThanken.SubSonicAPIforWinRT_";
-
-        /// <summary>
         /// APIにてアクセスする先
         /// </summary>
         protected Uri _baseUri = null;
@@ -57,7 +52,7 @@ namespace SubSonicAPI
             var valut = new PasswordVault();
             try
             {
-                credential = valut.Retrieve(PREFIX + baseUri.ToString(), userName);
+                credential = valut.Retrieve(baseUri.ToString(), userName);
                 if (credential != null)
                 {
                     valut.Remove(credential);
@@ -65,7 +60,7 @@ namespace SubSonicAPI
             }
             catch (Exception) { }
 
-            credential = new PasswordCredential(PREFIX + _baseUri.ToString(),
+            credential = new PasswordCredential(baseUri.ToString(),
                                                 userName, password);
             valut.Add(credential);
         }
@@ -84,7 +79,7 @@ namespace SubSonicAPI
             this(client, baseUri)
         {
             var valut = new PasswordVault();
-            credential = valut.Retrieve(PREFIX + _baseUri.ToString(), userName);
+            credential = valut.Retrieve(baseUri.ToString(), userName);
 
             if (null == credential)
             {
