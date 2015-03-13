@@ -27,14 +27,9 @@ namespace SubSonicAPI
         protected string _client = String.Empty;
 
         /// <summary>
-        /// APIにてアクセスする先
+        /// 資格情報
         /// </summary>
-        protected Uri _baseUri = null;
-
-        /// <summary>
-        /// ユーザー名とパスワード（PasswordValutから取得）
-        /// </summary>
-        protected PasswordCredential credential = null;
+        protected PasswordCredential _credential;
 
         /// <summary>
         /// コンストラクタ
@@ -43,63 +38,11 @@ namespace SubSonicAPI
         /// PasswordValutに対する追加・更新
         /// </remarks>
         /// <param name="client">クライアントアプリ名</param>
-        /// <param name="baseUri">ベースURI</param>
-        /// <param name="userName">ユーザー名</param>
-        /// <param name="password">パスワード</param>
-        protected ApiBase(string client, Uri baseUri, string userName, string password) :
-            this(client, baseUri)
-        {
-            var valut = new PasswordVault();
-            try
-            {
-                credential = valut.Retrieve(baseUri.ToString(), userName);
-                if (credential != null)
-                {
-                    valut.Remove(credential);
-                }
-            }
-            catch (Exception) { }
-
-            credential = new PasswordCredential(baseUri.ToString(),
-                                                userName, password);
-            valut.Add(credential);
-        }
-
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        /// <remarks>
-        /// PasswordValutからの参照
-        /// </remarks>
-        /// <param name="client">クライアントアプリ名</param>
-        /// <param name="baseUri">ベースURI</param>
-        /// <param name="userName">ユーザー名</param>
-        /// <exception cref="ArgumentException"/>
-        protected ApiBase(string client, Uri baseUri, string userName) :
-            this(client, baseUri)
-        {
-            var valut = new PasswordVault();
-            credential = valut.Retrieve(baseUri.ToString(), userName);
-
-            if (null == credential)
-            {
-                // パスワードがまだ登録されていない。
-                throw new ArgumentException();
-            }
-        } 
-        
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        /// <remarks>
-        /// 公開している２つのコンストラクタに共通する事前処理
-        /// </remarks>
-        /// <param name="client">クライアントアプリ名</param>
-        /// <param name="baseUri">ベースURI</param>
-        private ApiBase(string client, Uri baseUri)
+        /// <param name="credential">資格情報</param>
+        protected ApiBase(string client, PasswordCredential credential)
         {
             _client = client;
-            _baseUri = baseUri;
+            _credential = credential;
         }
 
         /// <summary>
@@ -121,9 +64,9 @@ namespace SubSonicAPI
         {
             var client = new RestClient();
             client.AddHandler("txt/xml", new XmlDeserializer());
-            client.BaseUrl = _baseUri.ToString();
+            client.BaseUrl = _credential.Resource;
             client.Authenticator =
-                new SimpleAuthenticator("u", credential.UserName, "p", credential.Password);
+                new SimpleAuthenticator("u", _credential.UserName, "p", _credential.Password);
             req.AddParameter("v", API_VERSION);
             req.AddParameter("c", _client);
             req.AddParameter("f", FORMAT);
